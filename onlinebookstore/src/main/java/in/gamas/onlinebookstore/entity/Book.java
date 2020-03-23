@@ -29,6 +29,8 @@ public class Book {
 	
 	private String sku;
 	
+	private String name;
+	
 	private String description;
 	
 	@Column(name="unit_price")
