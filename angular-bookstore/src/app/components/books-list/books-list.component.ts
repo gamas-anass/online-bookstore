@@ -1,15 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Book } from "../../common/book";
 import { BookService } from 'src/app/services/book.service';
+import { ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'app-books-list',
-  templateUrl: './books-list.component.html',
+  //templateUrl: './books-list.component.html',
+  templateUrl: './books-grid.component.html',
   styleUrls: ['./books-list.component.css']
 })
 export class BooksListComponent implements OnInit {
 
-  books : Book[]
+  books: Book[]
+  currentCategoryId: number;
   // static values for Book[] 
   /*books : Book[] = [
     {
@@ -93,19 +97,36 @@ export class BooksListComponent implements OnInit {
 
   ]*/
 
-  constructor(private _bookService: BookService) { }
+  constructor(private _bookService: BookService,
+    private _activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
 
-    this.listBooks();
+    //this.listBooks();
+    this._activatedRoute.paramMap.subscribe(() => {
+      this.listBooks();
+    })
+
   }
 
-  listBooks (){
-    this._bookService.getBooks().subscribe(
-     /* data => { 
+  listBooks() {
 
-        console.log(data);
-      }*/
+    const hasCategoryId: boolean = this._activatedRoute.snapshot.paramMap.has('id');
+
+    if (hasCategoryId) {
+
+      this.currentCategoryId = +this._activatedRoute.snapshot.paramMap.get('id');
+    } else {
+
+      this.currentCategoryId = 1;
+    }
+
+
+    this._bookService.getBooks(this.currentCategoryId).subscribe(
+      /* data => { 
+ 
+         console.log(data);
+       }*/
 
       data => this.books = data
 
